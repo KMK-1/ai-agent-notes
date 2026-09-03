@@ -1,132 +1,190 @@
 ---
 name: presentation-explainer
-description: Create or revise high-quality explanatory PowerPoint decks and presentation materials. Use whenever the user asks for an explanation deck, technical presentation, internal briefing, training deck, process explanation, system overview, architecture explanation, feature introduction, or a .pptx intended to help an audience understand a topic. Combine message-first slide design with robust PPTX generation and visual QA. Prefer clarity and self-contained understanding over pitch-deck theatrics.
+description: Create or revise high-quality explanatory PowerPoint decks and presentation materials. Use for explanation decks, technical presentations, internal briefings, training decks, process explanations, system overviews, architecture explanations, feature introductions, or PPTX materials intended to help an audience understand a topic. Combine message-first slide design with robust PPTX generation, local company-template reuse, and visual QA.
 ---
 
 # Presentation Explainer
 
-Create presentation material that is easy to understand, visually structured, and technically reliable.
+Create presentation material that is easy to understand, visually structured, technically reliable, and—when local reference templates exist—consistent with the user's organization style.
 
-This skill combines two complementary approaches:
+This skill combines:
+1. **Message and slide design discipline** inspired by hunkim/slide-skill.
+2. **PPTX production and QA discipline** inspired by Anthropic's PPTX skill.
+3. **Local template/reference adaptation** so users can drop company PPT/POTX files into the skill folder and have the agent inspect and reuse them automatically.
 
-1. **Message and slide design discipline** inspired by hunkim/slide-skill: decide what each slide must communicate before designing it.
-2. **PPTX production and QA discipline** inspired by Anthropic's PPTX skill: build/edit the actual deck, render it, inspect it visually, fix defects, and verify again.
+The target is an **explanation deck**, not a pitch deck. A reader should understand most of the material without hearing the presenter while slides remain visually scannable.
 
-The target is an **explanation deck**, not a pitch deck. A reader should be able to understand most of the material even without hearing the presenter, while the slides must still remain visually scannable.
+# Local folder contract
 
-## Core rule
+The skill may be installed locally with this structure:
+
+```text
+presentation-explainer/
+├─ SKILL.md
+├─ templates/
+│  ├─ README.md
+│  ├─ company-template.pptx       # optional
+│  ├─ company-template.potx       # optional
+│  └─ examples/                   # optional real internal examples
+│     ├─ good-example-01.pptx
+│     └─ good-example-02.pptx
+├─ references/
+│  └─ company-style.md            # optional explicit style rules
+└─ output/                         # optional generated decks
+```
+
+The user should be able to replace/add files under `templates/` without editing this SKILL.md.
+
+## Template discovery — mandatory first step
+
+Before creating or substantially redesigning a presentation, inspect the skill's local directory when filesystem access is available.
+
+Look for, in priority order:
+
+1. `templates/*.potx`
+2. `templates/*.pptx`
+3. `templates/examples/*.pptx`
+4. `references/company-style.md`
+
+If one or more template/reference files exist, treat them as the preferred visual source of truth unless the user explicitly requests another style.
+
+Do **not** require the user to mention the template every time.
+
+If no local template exists, use the default Presentation Explainer design rules.
+
+If multiple candidate templates exist and no explicit default is specified:
+- prefer a `.potx` or clearly named `company-template.*`
+- otherwise choose the template whose aspect ratio and layout coverage best match the requested deck
+- use example decks primarily to infer style, not as content sources
+- ask the user only when materially different corporate styles make the choice genuinely ambiguous
+
+## Local template safety
+
+Company/reference files may contain confidential information.
+
+- Treat local templates and examples as local source material.
+- Do not upload, publish, or externally search their contents unless the user explicitly requests it.
+- Reuse visual conventions, layouts, masters, theme information, and appropriate reusable components.
+- Do not copy confidential example text, numbers, names, project identifiers, screenshots, or data into a new deck unless the user requested that content.
+
+# Company-style extraction
+
+When a local company template or example deck exists, inspect it before building slides.
+
+Extract or infer:
+- slide size / aspect ratio
+- theme colors
+- background colors
+- title/subtitle/body typography
+- font sizes and weight hierarchy
+- title position
+- content margins
+- logo placement
+- header/footer conventions
+- page numbering
+- section-divider style
+- common grids and alignment
+- table styling
+- chart styling
+- shape fills/outlines
+- corner radii
+- connector/arrow style
+- callout/annotation style
+- image treatment
+- icon style
+- whitespace/density conventions
+- common slide layouts
+
+Separate **brand constraints** from **content layouts**.
+
+Brand constraints should normally be preserved across the whole deck. Content layouts may be adapted to fit the explanation.
+
+## Style precedence
+
+When instructions conflict, use this order:
+
+1. explicit user request
+2. supplied/local corporate template and `company-style.md`
+3. readability and correctness
+4. this skill's generic design rules
+
+Never violate readability merely to imitate a bad example. Preserve corporate identity while correcting obvious overflow, clipping, alignment, or accessibility problems.
+
+# Core rule
 
 **One primary point per slide.**
 
 Before building a slide, write its primary point as one sentence. The title should normally express that point as a takeaway rather than merely naming a topic.
 
-However, unlike a stage-only presentation, explanatory material may contain enough supporting detail to remain understandable when read independently. Do not delete necessary context merely to make a slide sparse.
-
-Use this balance:
+For explanatory material, retain enough supporting detail for standalone comprehension.
 
 > One primary message + enough supporting evidence to understand it + no unrelated secondary message.
 
-## Operating modes
-
-Determine the mode before planning the deck.
+# Operating modes
 
 ### Explainer mode — default
-
 Use for technical explanations, internal materials, training, process descriptions, architecture, product/system introductions, and documentation-like presentations.
 
-Optimize for:
-- comprehension without narration
-- logical progression
-- diagrams over prose when useful
-- meaningful labels and annotations
-- moderate information density
-- easy later editing
+Optimize for comprehension without narration, logical progression, meaningful diagrams, labels/annotations, moderate information density, and easy editing.
 
 ### Presenter mode
-
-Use only when the user explicitly wants a live-presentation deck.
-
-Optimize for:
-- faster visual comprehension
-- less body text
-- stronger visual hierarchy
-- speaker-led explanation
+Use when the user explicitly wants a live-presentation deck. Reduce body text and increase visual hierarchy.
 
 ### Reference-heavy mode
+Use when the deck will mainly be read/circulated. Allow more detail while preserving one primary point per slide; move deep detail to appendix when practical.
 
-Use when the deck will mainly be read or circulated rather than presented.
+# Workflow
 
-Allow more detail, but preserve one primary point per slide. Move deep technical material to appendix slides when practical.
+## Phase 0 — Discover local style assets
 
-## Workflow
+Inspect `templates/` and `references/` first.
 
-Follow these phases in order.
+If assets exist:
+1. identify the primary template
+2. inspect its visual appearance and slide structure
+3. extract the design system
+4. identify reusable masters/layouts/components
+5. record any constraints needed during generation
 
-### Phase 1 — Understand the communication problem
+Do not blindly clone one existing slide repeatedly.
 
-Identify:
-- audience
-- audience knowledge level
-- purpose
-- desired outcome
-- source material
-- required slide count or presentation duration, if provided
-- whether the deck must work without narration
-- brand/template constraints
+## Phase 1 — Understand the communication problem
 
-Do not begin slide construction before these are reasonably understood. Infer obvious constraints from context instead of asking unnecessary questions.
+Identify audience, knowledge level, purpose, desired outcome, source material, slide count/duration if given, standalone-readability requirement, and brand/template constraints.
 
-### Phase 2 — Build the explanation model
+Infer obvious constraints instead of asking unnecessary questions.
 
-Reduce the subject into a logical teaching sequence.
+## Phase 2 — Build the explanation model
 
-Common structures include:
+Choose a logical teaching structure.
 
-**Concept**
-Context → definition → components → mechanism → example → takeaway
+**Concept:** Context → definition → components → mechanism → example → takeaway
 
-**Process**
-Why it exists → inputs → stages → decisions → outputs → exception/example
+**Process:** Why → inputs → stages → decisions → outputs → exception/example
 
-**System**
-Purpose → context → architecture → component roles → data/control flow → interfaces → scenario
+**System:** Purpose → context → architecture → component roles → data/control flow → interfaces → scenario
 
-**Problem / improvement**
-Current state → problem → cause → changed mechanism → improved state → evidence
+**Problem / improvement:** Current state → problem → cause → changed mechanism → improved state → evidence
 
-**Feature introduction**
-Need → feature → how it works → user flow → benefit → limitations/conditions
+**Feature:** Need → feature → how it works → user flow → benefit → limitations/conditions
 
-Use the structure that best matches the subject. Do not force every deck into Problem → Solution storytelling.
+Do not force every deck into Problem → Solution storytelling.
 
-### Phase 3 — Create a slide blueprint
+## Phase 3 — Create a slide blueprint
 
-Before generating slides, define every slide using:
-
+Define every slide with:
 - `slide_number`
 - `primary_point`
 - `takeaway_title`
 - `supporting_content`
 - `visual_form`
+- `template_layout_or_reference`
 - `evidence_or_source`
 - `notes_or_appendix_candidate`
 
-Example:
+Check narrative continuity before implementation.
 
-```text
-Slide 04
-Primary point: Security Access prevents protected diagnostic services from being executed without authorization.
-Takeaway title: Protected UDS services require Security Access first
-Supporting content: Seed request, seed response, key calculation, key response
-Visual form: sequence diagram
-Evidence/source: UDS specification / provided source
-```
-
-Check the complete blueprint for narrative continuity before implementation.
-
-## Visual-form router
-
-Choose a visual form based on the information, not on whichever layout is easiest to code.
+# Visual-form router
 
 | Information | Preferred form |
 |---|---|
@@ -139,172 +197,105 @@ Choose a visual form based on the information, not on whichever layout is easies
 | Before vs after | mirrored comparison |
 | Multiple capabilities | structured card/row grid |
 | Numeric trend | chart |
-| KPI / one important number | number callout |
+| KPI / important number | number callout |
 | Cause and effect | causal flow |
 | Decision logic | decision tree / flowchart |
-| UI or product behavior | screenshot + annotations |
+| UI/product behavior | screenshot + annotations |
 | Technical mechanism | annotated mechanism diagram |
-| Dense supporting detail | appendix or structured reference slide |
+| Dense detail | appendix / structured reference slide |
 
-If a mechanism can be understood more quickly as a diagram than as prose, draw the mechanism.
+If a mechanism is understood faster as a diagram than prose, draw the mechanism.
 
-## Slide design rules
+# Slide design rules
 
-### 1. Titles communicate conclusions
+## Titles communicate conclusions
+Prefer takeaway titles such as `Security Access protects restricted diagnostic functions` over generic labels such as `Security Access` when the conclusion is known.
 
-Prefer:
-- `Security Access protects restricted diagnostic functions`
-- `Three input channels converge into one task pipeline`
+## One point does not mean one object
+A diagram, annotations, short explanation, and evidence may coexist when all support the same point.
 
-Avoid weak topic labels when a takeaway is known:
-- `Security Access`
-- `System Architecture`
-- `Process`
-
-Topic labels are acceptable for section dividers.
-
-### 2. One primary point does not mean one object
-
-A slide may contain a diagram, annotations, a short explanation, and evidence if all of them support the same point.
-
-Split a slide when two independent conclusions compete for attention.
-
-### 3. Use hierarchy instead of deletion
-
-For explanatory decks, solve density in this order:
-
+## Use hierarchy instead of deletion
+Solve density in this order:
 1. remove redundancy
 2. convert prose into structure/diagram
 3. group related information
-4. demote caveats/sources to footnotes
+4. demote caveats/sources
 5. move deep detail to appendix
 6. split the slide
 
-Never solve complexity by simply shrinking fonts or tightening spacing.
+Never solve complexity by shrinking fonts or squeezing spacing.
 
-### 4. Prefer visual explanation
+## Prefer visual explanation
+Prefer editable shapes, connectors, diagrams, charts, and annotations over decorative imagery. Use screenshots when they are evidence or explain an interface.
 
-Prefer native shapes, connectors, diagrams, charts, and clean annotations over decorative imagery.
+## Preserve the corporate design system
+When a local template exists, inherit its typography, palette, margins, title treatment, footer conventions, and recognizable component styling.
 
-Use screenshots when the screenshot itself is evidence or when explaining an interface. Crop to the relevant region and annotate only what matters.
+New diagrams do not need to copy old layouts exactly, but they should look as though they belong to the same organization.
 
-Avoid decorative stock imagery that does not improve understanding.
+## Favor whitespace and alignment
+Whitespace is structural. Align related elements precisely. Similar objects should share dimensions and spacing.
 
-### 5. Maintain a coherent design system
+# Diagram rules
 
-Use consistent:
-- page margins
-- title positions
-- type scale
-- spacing rhythm
-- corner radii
-- line weights
-- icon style
-- diagram grammar
-- color meaning
-
-Use a restrained palette. Assign accent colors semantically where possible rather than randomly changing colors between slides.
-
-### 6. Favor whitespace and alignment
-
-Whitespace is structural. Do not fill empty regions merely because they are empty.
-
-Align related elements precisely. Similar objects should share dimensions, spacing, and baseline relationships.
-
-### 7. Preserve readability
-
-Do not rely on tiny text. If text becomes too small to read comfortably in the intended context, restructure or split the content.
-
-Keep body copy concise but complete enough for the selected operating mode.
-
-## Explanation-specific diagram rules
-
-For architecture, process, and technical slides:
-
+For architecture/process/technical slides:
 - show direction explicitly
-- label arrows when their meaning is not obvious
-- distinguish data flow, control flow, state, and grouping when relevant
+- label non-obvious arrows
+- distinguish data/control/state/grouping when relevant
 - use consistent shapes for consistent semantic roles
 - minimize crossing connectors
-- place annotations close to the object they explain
-- highlight the current/focal path while keeping context visible
-- avoid diagrams that require a legend for trivial meanings
+- place annotations close to their targets
+- highlight the focal path while retaining context
 
 A diagram must answer a question, not merely decorate the slide.
 
-## Deck-level rhythm
+# PPTX implementation
 
-Do not repeat the same layout on every slide.
+When a local template exists, prefer **template-aware generation** over recreating its appearance from memory.
 
-Vary composition according to content while preserving the same visual language. A healthy explainer deck may alternate among:
-- focal concept
-- diagram
-- comparison
-- process
-- annotated example
-- structured summary
+Where tooling permits:
+- preserve slide dimensions
+- preserve theme/master/layout information
+- reuse appropriate existing layouts
+- preserve corporate fonts when installed
+- reuse approved footer/logo/page-number treatment
+- create new editable content on top of the template system
 
-Use section dividers only when they materially improve navigation.
+Do not assume every source slide must be reused. Choose the best layout for each blueprint slide.
 
-## PPTX implementation
+When creating from scratch, establish page size/design tokens first and create reusable helpers for common components.
 
-When an existing template or presentation is provided:
+Use the environment's supported PPTX tooling; do not hard-code unavailable dependencies.
 
-1. inspect the presentation visually
-2. inspect its text/content structure
-3. identify reusable layouts and visual conventions
-4. map blueprint slides to appropriate layouts
-5. preserve brand language unless the user requests redesign
-6. complete structural changes before fine-grained content editing
-7. replace all placeholder content
-8. render and visually inspect the result
+# Visual QA — mandatory
 
-When creating from scratch:
+Saving successfully is not sufficient.
 
-1. establish page size and design tokens first
-2. create reusable helpers for titles, footnotes, cards, diagrams, and common components
-3. build slides from the approved blueprint
-4. use varied content-appropriate layouts
-5. keep objects editable whenever practical
-
-Use the environment's supported PPTX generation/editing tooling. Do not hard-code a dependency on a tool that is unavailable.
-
-## Visual QA — mandatory
-
-A PPTX is not finished when the file saves successfully.
-
-Always perform a visual verification loop whenever the environment supports rendering.
-
-### QA pass
-
-Render every slide to images and inspect for:
-- overlapping elements
-- clipped text
-- text overflow
+When rendering is available, render every slide and inspect:
+- overlaps
+- clipping/overflow
 - awkward wrapping
-- elements outside slide bounds
-- inconsistent alignment
-- uneven spacing
-- weak hierarchy
-- low contrast
-- unreadably small labels
-- confusing connector paths
+- off-slide elements
+- alignment/spacing
+- hierarchy
+- contrast
+- tiny labels
+- connector paths
 - excessive density
-- accidental placeholder content
+- placeholders
 - repetitive layouts
-- inconsistent visual semantics
+- inconsistent semantics
+- deviations from the discovered corporate style
 
-Also ask for each slide:
-
+For every slide ask:
 1. What is the single primary point?
-2. Is that point obvious from the title and composition?
+2. Is it obvious from title and composition?
 3. Does every major element support it?
-4. Would a diagram communicate any text faster?
-5. Can supporting detail be understood without the presenter?
-6. Is anything competing unnecessarily for attention?
+4. Would a diagram communicate text faster?
+5. Is enough context present without narration?
+6. Does this slide look like it belongs to the same company template?
 
-### Fix-and-verify loop
-
+## Fix-and-verify loop
 1. generate/edit
 2. render
 3. inspect critically
@@ -313,80 +304,37 @@ Also ask for each slide:
 6. re-render affected slides
 7. inspect again
 
-Complete at least one fix-and-verify cycle for generated decks when rendering tools are available. If rendering is unavailable, explicitly perform structural checks and do not claim visual verification occurred.
+Complete at least one fix-and-verify cycle when rendering tools are available. Never claim visual verification if rendering was unavailable.
 
-## Complexity recovery
+# Accuracy and evidence
 
-When feedback says a slide is too complex:
+Never invent facts, numbers, citations, or source claims. Preserve important caveats/conditions. Example decks are style references unless the user explicitly asks to reuse their content.
 
-Do NOT:
-- shrink all fonts
-- squeeze margins
-- reduce line spacing until content fits
-- hide information in unreadable footnotes
+# Editing existing decks
 
-Instead:
-- restate the primary point
-- identify secondary messages
-- convert prose into a diagram
-- remove repetition
-- move specialist detail to appendix
-- split the slide if necessary
+Do not automatically rebuild an existing deck. Diagnose message, structure, layout, density, consistency, and technical defects first. Preserve good corporate layouts and make the smallest changes that materially improve comprehension unless redesign is requested.
 
-## Accuracy and evidence
+# Output expectations
 
-Never invent technical facts, numbers, citations, or source claims to make a slide look complete.
+For deck-generation tasks, produce the actual `.pptx` when supported. The result should feel like a polished company technical explainer—not a document pasted onto slides and not a theatrical pitch deck.
 
-Preserve important caveats and conditions. Put secondary evidence in a quiet footer or appendix when it should remain available without competing with the main message.
+# Final shipping checklist
 
-For quantitative slides, make the visual conclusion consistent with the underlying numbers.
-
-## Editing existing decks
-
-When asked to improve an existing deck, do not automatically rebuild it from scratch.
-
-First diagnose:
-- message problems
-- structure problems
-- layout problems
-- density problems
-- visual inconsistency
-- technical PPTX defects
-
-Preserve good content and layouts. Make the smallest set of changes that materially improves comprehension unless the user requests a redesign.
-
-## Output expectations
-
-For a deck-generation task, produce the actual `.pptx` when the environment supports it.
-
-When useful, also provide a concise blueprint or summary of major design decisions, but do not substitute a textual outline for the requested presentation.
-
-The final deck should feel like a well-designed technical explainer, not a document pasted onto slides and not a theatrical pitch deck.
-
-## Final shipping checklist
-
-Before delivery confirm:
-
-- [ ] audience and purpose are reflected in the deck
+- [ ] local `templates/` and `references/` were checked
+- [ ] corporate template/style was applied when present
+- [ ] confidential example content was not unintentionally copied
 - [ ] every slide has one primary point
-- [ ] takeaway titles are used where appropriate
 - [ ] slide sequence forms a coherent explanation
 - [ ] diagrams are used where they outperform prose
-- [ ] necessary standalone context remains available
-- [ ] no slide contains unrelated secondary messages
-- [ ] no tiny-font workaround was used to solve density
-- [ ] layouts vary with content while preserving one design system
-- [ ] sources/caveats are retained where necessary
+- [ ] enough standalone context remains
+- [ ] no tiny-font density workaround was used
+- [ ] layouts vary with content while preserving the corporate design system
+- [ ] sources/caveats are retained where needed
 - [ ] placeholders are gone
-- [ ] visual QA was performed when rendering was available
+- [ ] visual QA was performed when available
 - [ ] at least one fix-and-verify cycle was completed when possible
-- [ ] the final PPTX opens and remains editable where practical
+- [ ] final PPTX remains editable where practical
 
-## Attribution / design basis
+# Attribution / design basis
 
-This custom skill synthesizes principles from:
-
-- Anthropic's public `pptx` skill: PPTX creation/editing workflows, varied layouts, rendering, and iterative visual QA.
-- hunkim's `slide-skill`: one-point-per-slide discipline, significance/structure/simplicity, visual explanation, and complexity reduction.
-
-It intentionally adapts those principles for **explanatory and technical materials**, where standalone comprehension is more important than aggressively minimizing slide text.
+This custom skill synthesizes principles from Anthropic's public `pptx` skill and hunkim's `slide-skill`, adapted for explanatory/technical materials and local corporate-template reuse.
