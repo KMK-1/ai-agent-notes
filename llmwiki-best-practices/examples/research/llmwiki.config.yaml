@@ -1,0 +1,6 @@
+project:
+  name: research-example
+  domain: research
+ontology:
+  preferred_entities: [paper, author, dataset, benchmark, model]
+  preferred_topics: [method, evidence, limitation, replication]

@@ -1,0 +1,6 @@
+project:
+  name: personal-knowledge-example
+  domain: personal-knowledge
+ontology:
+  preferred_entities: [person, organization, project, book, tool]
+  preferred_topics: [learning, ideas, decisions, references]

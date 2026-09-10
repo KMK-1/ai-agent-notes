@@ -1,0 +1,6 @@
+project:
+  name: software-example
+  domain: software
+ontology:
+  preferred_entities: [repository, service, package, api, team]
+  preferred_topics: [architecture, reliability, security, developer-experience]

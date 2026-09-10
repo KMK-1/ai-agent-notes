@@ -1,0 +1,14 @@
+# Domain-specific preferences belong here, not in AGENTS.md.
+preferred_entity_types:
+  - person
+  - organization
+  - product
+  - system
+  - place
+
+preferred_topic_types:
+  - technology
+  - process
+  - strategy
+
+custom_fields: {}
