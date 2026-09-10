@@ -1,0 +1,6 @@
+project:
+  name: automotive-example
+  domain: automotive
+ontology:
+  preferred_entities: [vehicle, ecu, component, supplier, signal, diagnostic-service]
+  preferred_topics: [quality, adas, diagnostics, can, field-issue]

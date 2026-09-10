@@ -1,0 +1,14 @@
+version: 1
+sources: []
+# Example entry:
+# - id: source-001
+#   locator: sources/example.pdf
+#   fingerprint:
+#     algorithm: sha256
+#     value: "..."
+#   status: processed       # new|processed|changed|missing|replaced|ignored
+#   first_seen: 2026-01-01
+#   last_seen: 2026-01-01
+#   last_ingested: 2026-01-01
+#   source_page: wiki/sources/source-001.md
+#   influenced_pages: []

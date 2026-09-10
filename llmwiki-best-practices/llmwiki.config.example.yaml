@@ -1,0 +1,71 @@
+version: 1
+project:
+  name: example-wiki
+  domain: generic
+  purpose_file: wiki-purpose.md
+  schema_file: wiki-schema.md
+
+paths:
+  sources: sources
+  wiki: wiki
+  contradictions: contradictions
+  manifest: manifest/sources.yaml
+  operation_log: log/operations.md
+
+objects:
+  enabled:
+    - source
+    - entity
+    - concept
+    - topic
+    - decision
+    - issue
+    - synthesis
+    - answer
+
+source_policy:
+  immutable: true
+  fingerprint: sha256
+  reingest_unchanged: false
+  missing_source_action: warn
+
+provenance:
+  required_for_material_claims: true
+  default_confidence: medium
+
+freshness:
+  enabled: true
+  default_review_days: null
+  synthesis_dependency_check: true
+  changed_source_marks_dependents_for_review: true
+
+query:
+  prefer_compiled_wiki: true
+  raw_source_fallback: true
+  file_reusable_answers: ask
+
+lint:
+  fail_on_errors: true
+  checks:
+    - broken_links
+    - orphan_pages
+    - duplicate_pages
+    - provenance
+    - source_coverage
+    - contradictions
+    - freshness
+  health_score:
+    enabled: true
+    weights:
+      source_coverage: 20
+      provenance_coverage: 20
+      link_integrity: 15
+      duplication: 10
+      contradiction_hygiene: 15
+      freshness: 15
+      orphan_rate: 5
+
+multi_agent:
+  enabled: false
+  canonical_writer: reconciler
+  require_handoff: true
