@@ -1,0 +1,38 @@
+{
+  "productName": "Example Web App",
+  "baseUrl": "http://localhost:3000",
+  "auth": {
+    "mode": "none",
+    "loginUrl": null,
+    "expectedPathPrefix": null
+  },
+  "mutationPolicy": "read-only",
+  "routes": [
+    { "name": "home", "path": "/" },
+    { "name": "login", "path": "/login" },
+    { "name": "dashboard", "path": "/dashboard" },
+    { "name": "settings", "path": "/settings" }
+  ],
+  "roles": [
+    {
+      "name": "anonymous",
+      "description": "Unauthenticated visitor"
+    }
+  ],
+  "criticalAssertions": [
+    "Primary navigation is understandable without documentation",
+    "Critical pages render without horizontal overflow on mobile",
+    "Error states tell the user what to do next"
+  ],
+  "journeys": [
+    {
+      "id": "P01",
+      "name": "First visit",
+      "role": "anonymous",
+      "goal": "Understand the product and find the primary action"
+    }
+  ],
+  "notes": [
+    "Use a test/staging environment before enabling write journeys."
+  ]
+}
