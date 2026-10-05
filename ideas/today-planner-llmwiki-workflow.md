@@ -1,49 +1,42 @@
-# Today Planner × LLMWiki 업무 지식 축적 구조
+# Today Planner × Work Memory × LLMWiki 업무 지식 축적 구조
 
 ## 문제
 
-업무 중 새롭게 알게 된 내용을 Obsidian/LLMWiki에 기록하려고 해도, 실제 업무에 집중하다 보면 Wiki에 넣는 것을 자주 잊게 된다.
+업무 중 새롭게 알게 된 내용을 Obsidian/LLMWiki에 기록하려고 해도 실제 업무에 집중하다 보면 Wiki에 넣는 것을 자주 잊게 된다.
 
-따라서 사용자가 `Wiki에 기록해야 한다`고 기억하는 구조가 아니라, **오늘의 할 일 플래너를 업무의 시작점으로 만들고 업무 완료 과정에서 지식을 자동 회수하는 구조**를 지향한다.
+따라서 사용자가 `Wiki에 기록해야 한다`고 기억하는 구조가 아니라, **오늘의 할 일과 오늘 한 일을 기록하는 자연스러운 업무 흐름 자체에서 지식을 자동 회수하는 구조**를 지향한다.
 
 ## 핵심 개념
 
-- **Planner = 단기 기억 / 현재 해야 할 일**
-- **LLMWiki = 장기 기억 / 축적된 업무 지식**
-- **LLM = Planner와 Wiki 사이의 지식 연결 계층**
-- **WorkManager = 업무 정보의 1차 필터 / 중요 정보 선별 계층**
+- **Work Memory = 전체 업무 기억 시스템 / 사용자 진입점**
+- **Today Planner = 단기 기억 / 현재 해야 할 일**
+- **Work Journal = 오늘 한 일을 아무렇게나 기록하는 Raw Memory**
+- **Timeline = 업무 활동의 시간순 기록**
+- **LLMWiki = 재사용 가치가 있는 정제된 장기 기억**
+- **Decision Log = 중요한 판단과 결정의 이력**
+- **LLM = 분류 / 추출 / 연결 / 병합 / 검색 계층**
+
+일반적인 Notion처럼 사용자가 페이지 구조, 데이터베이스 속성, 태그를 직접 관리하는 방식보다는 **사용자는 자유롭게 기록하고 LLM이 뒤에서 구조화하는 AI 업무 Workspace**를 목표로 한다.
 
 ```text
-아침
-  ↓
-Today Planner
-  ↓
-Task 시작
-  ↓
-관련 기존 Wiki 자동 제시
-  ↓
-업무 수행
-  ↓
-Quick Capture / 파일 / 업무 결과
-  ↓
-Task 완료
-  ↓
-LLM이 지식 후보 추출
-  ↓
-기존 Wiki 검색 및 비교
-  ↓
-신규 생성 / 기존 문서 업데이트 / 무시
-  ↓
-사용자 승인
-  ↓
-LLMWiki / Obsidian 반영
+                   Work Memory
+                        │
+       ┌────────────────┼────────────────┐
+       ↓                ↓                ↓
+ Today Planner      Work Journal      중요 Email
+       │                │                │
+       └────────────────┼────────────────┘
+                        ↓
+                       LLM
+                        ↓
+       ┌────────┬───────┼────────┬──────────┐
+       ↓        ↓       ↓        ↓          ↓
+     Task    Timeline  Wiki   Decision   Follow-up
 ```
 
 ## 1. Today Planner
 
 하루 업무의 진입점을 Planner로 통일한다.
-
-예시:
 
 ```text
 📅 오늘의 업무
@@ -54,11 +47,7 @@ LLMWiki / Obsidian 반영
 □ 프로젝트 주간회의
 ```
 
-## 2. Task 시작 시 Wiki 활용
-
-Task를 시작하면 업무 내용과 관련된 기존 Wiki를 자동 검색해 보여준다.
-
-예시:
+Task를 시작하면 관련된 기존 Wiki와 과거 기록을 자동으로 보여준다.
 
 ```text
 ▶ HDA DTC C1234 원인 분석
@@ -73,13 +62,85 @@ Task를 시작하면 업무 내용과 관련된 기존 Wiki를 자동 검색해 
 - 협력사 회신
 ```
 
-이를 통해 Wiki를 단순한 기록 저장소가 아니라 **현재 업무를 수행할 때 활용하는 지식 시스템**으로 만든다.
+Wiki를 단순 저장소가 아니라 **현재 업무를 수행할 때 다시 사용하는 지식 시스템**으로 만든다.
 
-## 3. 업무 중 Quick Capture
+## 2. Today + Work Journal
 
-업무 중에는 Wiki 문서를 직접 작성하지 않는다.
+Work Memory의 메인 화면에는 Today Planner와 함께 자유 입력 공간인 Work Journal을 둔다.
 
-Task에 짧은 메모만 남긴다.
+사용자는 정리하거나 분류할 필요 없이 오늘 한 일을 자연어로 아무렇게나 적는다.
+
+```text
+오늘 CANoe 패널 수정함.
+CH2로 바꾸니까 처음에 안 됐는데 node mapping도 CH2로 바꿔야 했음.
+다음에 주의.
+```
+
+LLM은 이를 자동으로 다음과 같이 분리한다.
+
+```text
+[완료 업무]
+CANoe Panel CH2 수정
+
+[새로운 지식]
+Channel 변경 시 Node/Network Mapping 확인 필요
+
+[Wiki]
+→ [[CANoe Panel]] 업데이트 후보
+
+[태그]
+#CANoe #Panel #CAN
+
+[후속 업무]
+없음
+```
+
+핵심 원칙은 **사람은 기록하고 AI는 정리한다**이다.
+
+## 3. Raw Memory와 Long-term Knowledge 분리
+
+Work Journal의 원문은 지우지 않고 Raw Memory로 보존한다.
+
+```text
+Work Journal (Raw Memory)
+        │
+        ├──────────────→ Timeline
+        │
+        ├── LLM ──────→ Task / Planner
+        │
+        ├── LLM ──────→ Decision Log
+        │
+        └── LLM ──────→ LLMWiki
+```
+
+### Work Journal
+
+`오늘 무엇을 했는가?`를 기록하는 원본 기억이다. 완벽하게 정리할 필요가 없다.
+
+### Timeline
+
+Work Journal, Task, 중요 이벤트를 날짜/시간순으로 연결한다.
+
+```text
+2026.10.05
+09:30  HDA 시험차 DTC 확인
+10:40  협력사 A 문의
+13:20  SW 1.32 수정사항 확인
+15:30  CANoe Panel CH2 수정
+17:10  시험 결과 정리
+```
+
+### LLMWiki
+
+Raw Memory 전체를 Wiki로 만들지 않는다. 여러 업무에서 다시 사용할 가치가 있는 지식만 정제하여 장기 기억으로 저장한다.
+
+### Decision Log
+
+업무 과정에서 결정된 사항은 일반 지식과 별도로 추적할 수 있게 한다.
+
+## 4. 업무 중 Quick Capture
+
+Work Journal뿐 아니라 Task 안에서도 짧은 메모를 남길 수 있다.
 
 ```text
 특정 IGN cycle에서만 발생
@@ -91,11 +152,9 @@ Task에 짧은 메모만 남긴다.
 
 향후 Windows 단축키(예: Ctrl+Alt+W)를 통한 전역 Quick Capture도 고려한다.
 
-## 4. Task 완료 시 Knowledge Capture
+## 5. Task 완료 시 Knowledge Capture
 
-`업무 완료`가 Wiki 기록의 트리거가 된다.
-
-Task 완료 시 LLM이 해당 업무에서 얻은 정보를 분석하여 Wiki 후보를 제안한다.
+`업무 완료`를 Wiki 기록의 또 다른 트리거로 사용한다.
 
 ```text
 🧠 이번 업무에서 발견된 지식
@@ -107,12 +166,8 @@ HDA DTC C1234 분석 결과
 - 협력사 SW 1.32 수정 예정
 
 기존 Wiki 검색 결과
-
-[[HDA DTC]]
-→ 업데이트 권장
-
-[[Security Access]]
-→ 관련 지식 발견
+[[HDA DTC]] → 업데이트 권장
+[[Security Access]] → 관련 지식 발견
 
 ☑ HDA DTC 업데이트
 ☐ Security Access 업데이트
@@ -121,11 +176,9 @@ HDA DTC C1234 분석 결과
 [그냥 완료]
 ```
 
-LLM이 자동으로 Wiki를 변경하기보다는 기본적으로 **후보 발견 → 사용자 승인 → 저장/병합** 흐름을 사용한다.
+기본 흐름은 **후보 발견 → 사용자 승인 → 저장/병합**으로 한다.
 
-## 5. Task에서 추출할 핵심 정보
-
-각 Task에서 다음 4가지 정보를 자동 추출한다.
+## 6. Task에서 추출할 핵심 정보
 
 ```yaml
 knowledge:
@@ -143,65 +196,70 @@ knowledge:
     - 양산차 재검증
 ```
 
-### Used
-업무 수행에 사용한 기존 지식.
+- **Used**: 업무 수행에 사용한 기존 지식
+- **Learned**: 업무를 통해 새롭게 발견한 재사용 가능한 지식
+- **Decision**: 업무 과정에서 확정된 판단이나 결정
+- **Follow-up**: 추가로 수행해야 하는 업무 또는 검증
 
-### Learned
-업무를 통해 새롭게 발견한 재사용 가능한 지식.
-
-### Decision
-업무 과정에서 확정된 판단이나 결정.
-
-### Follow-up
-추가로 수행해야 하는 업무 또는 검증.
-
-## 6. 양방향 흐름
-
-Wiki와 Planner는 단방향 저장 구조가 아니라 양방향으로 연결한다.
+## 7. Wiki ↔ Planner 양방향 흐름
 
 ```text
           LLMWiki
           ↑     ↓
    지식 축적     관련 지식 검색
           ↑     ↓
-       Today Planner
-             ↓
-          업무 수행
+      Work Memory
+          │
+      Today Planner
+          ↓
+       업무 수행
 ```
 
 ### 아침: Wiki → Planner
 
-오늘 Task와 관련된 과거 경험, 주의사항, 기존 분석 결과를 자동으로 제시한다.
-
-예:
+오늘 Task와 관련된 과거 경험, 주의사항, 기존 분석 결과를 자동 제시한다.
 
 > CANoe Panel CH2 검증
 >
 > ⚠️ 과거 기록: Panel Channel 변경 시 Node/Network Mapping도 확인 필요
 
-### 업무 종료: Planner → Wiki
+### 업무 중/종료: Planner & Journal → Wiki
 
-오늘 Task에서 새롭게 얻은 지식과 결정을 추출하여 Wiki에 축적한다.
+오늘 Task와 Work Journal에서 새롭게 얻은 지식과 결정을 추출하여 Wiki 후보로 만든다.
 
-## 7. Today 화면 아이디어
+## 8. Today 화면 아이디어
 
 ```text
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        TODAY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             WORK MEMORY
+          TODAY · 2026.10.05
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-오늘의 업무                  3 / 6 완료
+오늘의 업무                       3 / 6 완료
 
-🔴 HDA DTC C1234 분석        진행중
+🔴 HDA DTC C1234 분석             진행중
 🟡 협력사 SW 1.32 검증
-🟢 CANoe Panel 수정          ✓
-⚪ 주간회의                   ✓
+🟢 CANoe Panel 수정               ✓
+⚪ 주간회의                        ✓
 ⚪ 품질현황 보고서
 ⚪ 시험차 결과 확인
 
-────── Knowledge Capture ──────
+──────── Work Journal ────────────
 
-오늘 발견한 지식             7개
+오늘 뭐 했나요?
+┌────────────────────────────────┐
+│ 자유롭게 아무렇게나 기록...    │
+└────────────────────────────────┘
+                         [기록]
+
+──────── AI 정리 ────────────────
+
+🟡 업무   HDA DTC C1234 원인 분석
+🧠 지식   SW 1.32 DTC 조건 변경
+🔵 결정   SW 1.32 적용
+⏰ 할일   내일 시험차 재검증
+
+──────── Knowledge Capture ──────
 
 ✓ CANoe Channel Mapping 주의사항
 ✓ SW 1.32 변경사항
@@ -210,7 +268,7 @@ Wiki와 Planner는 단방향 저장 구조가 아니라 양방향으로 연결�
 
 [오늘의 Wiki 정리]
 
-────── Relevant Knowledge ──────
+──────── Relevant Knowledge ─────
 
 [[CANoe Panel]]
 [[UDS Security Access]]
@@ -218,26 +276,24 @@ Wiki와 Planner는 단방향 저장 구조가 아니라 양방향으로 연결�
 [[협력사 SW 관리]]
 ```
 
-## 8. Email → Knowledge Pipeline
+## 9. Email → Knowledge Pipeline
 
 ### 배경
 
-회사 이메일 전체를 LLMWiki/RAG에 넣으면 인사말, 반복된 스레드, 참조 메일, 일정 조율, 서명 등 장기 기억에 불필요한 정보가 지나치게 많이 포함된다.
+회사 이메일 전체를 LLMWiki/RAG에 넣으면 인사말, 반복 스레드, 일정 조율, 서명 등 장기 기억에 불필요한 정보가 많다.
 
-따라서 이메일 전체를 자동 수집하기보다는 **WorkManager에서 사용자가 중요하다고 판단한 메일만 1차 선별하고, 그 메일에서 LLM이 장기적으로 기억할 가치가 있는 정보만 추출**한다.
-
-### 전체 흐름
+따라서 이메일 전체를 자동 수집하지 않고 **Work Memory의 기존 메일 선별 기능을 이용해 사용자가 중요하다고 판단한 메일만 1차 선별한 뒤, LLM이 장기 기억 가치가 있는 정보만 추출**한다.
 
 ```text
 Outlook / Email
       ↓
-   평소 업무
+평소 업무
       ↓
-WorkManager에서 중요 메일을 Wiki 후보로 표시
+Work Memory에서 중요 메일을 Wiki 후보로 표시
       ↓
-   Wiki Inbox
+Wiki Inbox
       ↓
-    Export
+Export
       ↓
 LLM Knowledge Extractor
       ↓
@@ -254,17 +310,15 @@ LLM Knowledge Extractor
 Obsidian / LLMWiki
 ```
 
-### WorkManager Wiki 기능의 역할
+### 중요 메일 표시의 의미
 
-WorkManager의 Wiki 버튼은 단순히 `메일 원문을 Wiki에 저장`한다는 의미보다 다음 의미로 사용한다.
+Wiki 버튼/표시는 `메일 원문을 Wiki에 저장`한다는 의미보다 다음 의미로 사용한다.
 
 > **이 메일에는 장기적으로 기억할 가치가 있는 업무 정보가 있다.**
 
-사용자는 메일을 읽는 업무 흐름 안에서 Wiki 후보 표시만 하면 된다. 실제 지식 정리, 분류, 태깅, 기존 문서 탐색 및 병합은 후속 파이프라인이 담당한다.
+실제 지식 정리, 분류, 태깅, 기존 문서 탐색 및 병합은 후속 파이프라인이 담당한다.
 
 ### Export 권장 구조
-
-가능하면 단순 `.msg` 파일 묶음뿐 아니라 구조화된 JSON/JSONL Export를 지원한다.
 
 ```json
 {
@@ -283,8 +337,6 @@ WorkManager의 Wiki 버튼은 단순히 `메일 원문을 Wiki에 저장`한다�
 
 ### Knowledge Extractor
 
-LLM은 이메일을 요약하는 데 그치지 않고 장기 기억 가치가 있는 정보를 유형별로 추출한다.
-
 ```yaml
 type: knowledge
 source: email
@@ -298,13 +350,11 @@ decisions:
   - SOP 차량부터 적용
 
 know_how: []
-
 follow_up: []
-
 confidence: high
 ```
 
-특히 `Decision`을 별도 지식 타입으로 중요하게 관리한다. 실무에서는 시간이 지난 뒤 단순 정보보다 다음 질문이 중요한 경우가 많기 때문이다.
+특히 `Decision`을 별도 지식 타입으로 관리한다.
 
 - 왜 이렇게 결정했는가?
 - 언제 결정되었는가?
@@ -312,120 +362,122 @@ confidence: high
 - 어떤 사양/버전부터 적용되었는가?
 - 이후 변경된 결정은 없는가?
 
-### Source와 Knowledge 분리
+## 10. Source와 Knowledge 분리
 
 ```text
-WorkManager / LLMWiki
+Work Memory
 │
-├── Sources
-│   └── Email 원본 또는 원본 참조
+├── Raw Memory
+│   ├── Work Journal
+│   ├── Timeline
+│   └── Sources
+│       └── Email 원본 또는 원본 참조
 │
-└── Knowledge
+└── Structured Memory
+    ├── Task
     ├── Fact
     ├── Decision
     ├── Know-how
     ├── Issue
-    └── Lesson Learned
+    ├── Lesson Learned
+    └── Follow-up
+             │
+             ↓
+          LLMWiki
 ```
 
-검색/RAG에서는 우선 정제된 Knowledge를 검색한다. 근거 확인이 필요한 경우에만 Source의 원본 메일을 따라가도록 한다.
+검색/RAG에서는 우선 정제된 Knowledge를 검색한다. 근거 확인이 필요한 경우에만 Raw Memory나 Source를 따라간다.
 
-이를 통해 불필요한 토큰 사용과 검색 노이즈를 줄이고 지식의 재사용성을 높인다.
-
-### Today Planner와 연결
-
-이메일에서 추출한 Knowledge도 미래 Task의 관련 지식으로 다시 노출한다.
+## 11. 미래 업무에서 재사용
 
 ```text
-중요 메일
-   ↓
-WorkManager Wiki 후보
-   ↓
-Knowledge Extractor
-   ↓
-"SW 1.32 SOP 적용 결정"
-   ↓
-LLMWiki
-   ↓
-────────────────────
+중요 메일 / Work Journal / Task
+             ↓
+      Knowledge Extractor
+             ↓
+     "SW 1.32 SOP 적용 결정"
+             ↓
+          LLMWiki
+             ↓
+────────────────────────────
 몇 주 후
-────────────────────
-   ↓
+────────────────────────────
+             ↓
 Today Task: HDA 양산 SW 검증
-   ↓
+             ↓
 관련 Knowledge 자동 검색
-   ↓
+             ↓
 💡 과거 결정: SW 1.32부터 SOP 적용하기로 협의됨
 ```
 
-즉 이메일이 단순 보관되는 것이 아니라 **현재 업무에서 발견된 중요한 정보가 장기 기억으로 변환되고, 미래 업무 시점에 다시 사용되는 구조**를 만든다.
+사용자는 다음과 같은 질문도 할 수 있다.
 
-## 9. 통합 역할 정의
+- 이번 주 내가 한 일 정리해줘.
+- 이번 달 HDA 관련해서 무엇을 했지?
+- 지난번 CANoe CH2 문제를 어떻게 해결했지?
+- 9월부터 지금까지 협력사 A 관련 이슈 타임라인을 보여줘.
+- 특정 사양이 왜 그렇게 결정됐는지 찾아줘.
+
+## 12. 역할 정의
 
 ```text
-WorkManager
-  = 업무 정보의 1차 필터
+Work Memory
+  = 전체 업무 기억 시스템 / 통합 Workspace
 
 Today Planner
   = 현재 업무 컨텍스트 / 단기 기억
 
+Work Journal
+  = 자유롭게 기록하는 Raw Memory
+
+Timeline
+  = 시간순 업무 활동 기록
+
 LLMWiki
   = 정제된 장기 기억
 
+Decision Log
+  = 중요한 판단과 결정 이력
+
 LLM
-  = 추출 / 연결 / 병합 / 검색 계층
+  = 분류 / 추출 / 연결 / 병합 / 검색 계층
 ```
 
-전체적으로는 다음 순환 구조를 목표로 한다.
+## 13. 구현 우선순위
 
-```text
-업무/메일
-   ↓
-WorkManager
-   ↓
-Today Planner
-   ↓
-업무 수행
-   ↓
-Knowledge Capture
-   ↓
-LLMWiki
-   ↓
-미래 Task에서 관련 지식 재사용
-   └──────────────────────↺
-```
+초기 PoC:
 
-## 10. 구현 우선순위
+1. Work Memory Today 화면
+2. Today Planner
+3. Work Journal 자유 입력
+4. LLM 자동 분류(Task / Knowledge / Decision / Follow-up)
+5. Timeline 저장
+6. Task Detail + Quick Capture
+7. Complete & Wiki
+8. 기존 Wiki 검색
+9. 신규 문서 vs 기존 문서 업데이트 판단
+10. 사용자 승인 후 Markdown 반영
+11. 중요 메일 Wiki 후보 표시
+12. 선택 메일 Export
+13. Email Knowledge Extractor
+14. Source ↔ Knowledge 연결
+15. 추출된 Decision/Fact를 Today Task에서 재사용
 
-초기 PoC에서는 기능을 크게 만들지 않고 다음 흐름부터 검증한다.
-
-1. Today Planner
-2. Task Detail
-3. Task별 Quick Capture
-4. Complete & Wiki
-5. 기존 Wiki 검색
-6. 신규 문서 vs 기존 문서 업데이트 판단
-7. 사용자 승인 후 Markdown 반영
-8. WorkManager 중요 메일 Wiki 후보 표시
-9. 선택 메일 Export
-10. Email Knowledge Extractor
-11. Source ↔ Knowledge 연결
-12. 추출된 Decision/Fact를 Today Task에서 재사용
-
-이후 단계에서 다음 기능을 확장한다.
+이후 확장:
 
 - Windows 전역 Quick Capture
 - 업무 파일 자동 연결
 - Outlook/Teams 등 업무 데이터 연계
 - 하루 업무 흔적 기반 Wiki 후보 자동 탐색
-- RAG/semantic search
+- RAG / semantic search
 - 반복 이슈 및 과거 사례 자동 추천
 - 주간/월간 Knowledge Review
+- 자동 주간 업무보고 생성
 
 ## 목표
 
 최종적으로 사용자가 Wiki를 별도로 관리하는 것이 아니라,
 
-> **업무를 하면 자연스럽게 지식이 쌓이고, 다음 업무를 시작하면 과거 지식이 다시 나타나는 구조**
+> **오늘 할 일을 보고, 오늘 한 일을 아무렇게나 기록하면 AI가 업무 기억을 정리하고, 가치 있는 지식은 장기 기억으로 축적하며, 미래 업무에서 다시 꺼내주는 구조**
 
 를 만드는 것이 목표다.
