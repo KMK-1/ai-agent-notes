@@ -1,5 +1,5 @@
 ---
-name: mobile-user-panel
+name: mobile-user-panel-evaluation
 description: Evaluate a mobile app through a panel of simulated users with distinct goals, habits, skill levels, and preferences. Use interaction traces, screenshots, task outcomes, persona feedback, and an independent UX reviewer to find usability and product problems that ordinary functional tests miss.
 ---
 
@@ -23,7 +23,7 @@ See `references/RESEARCH.md` for attribution and license notes.
 ## Folder contract
 
 ```text
-mobile-user-panel/
+mobile-user-panel-evaluation/
 ├─ SKILL.md
 ├─ README.md
 ├─ personas/
@@ -131,13 +131,13 @@ At meaningful states, inspect screenshots for observable UX defects and consiste
 
 ## Integration with webapp-product-audit
 
-Reuse `skills/webapp-product-audit` when the target is a responsive/PWA web product or when browser/network/accessibility evidence is needed. `mobile-user-panel` adds persona diversity and cross-user synthesis; it does not replace technical browser auditing.
+Reuse `skills/webapp-product-audit` when the target is a responsive/PWA web product or when browser/network/accessibility evidence is needed. `mobile-user-panel-evaluation` adds persona diversity and cross-user synthesis; it does not replace technical browser auditing.
 
 Recommended combined flow:
 
 ```text
 webapp-product-audit → technical/journey evidence
-mobile-user-panel    → persona runs and UX synthesis
+mobile-user-panel-evaluation    → persona runs and UX synthesis
                      ↓
                  product backlog
 ```

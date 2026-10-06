@@ -23,4 +23,4 @@ This skill is an original orchestration/evaluation design. It references researc
 
 ## Why these are references rather than dependencies
 
-The goal is to keep `mobile-user-panel` lightweight and usable with different execution environments (real device, emulator, browser/PWA, CUA, Appium, or another mobile agent). External benchmarks can be integrated later as optional adapters after their runtime and licensing requirements are reviewed.
+The goal is to keep `mobile-user-panel-evaluation` lightweight and usable with different execution environments (real device, emulator, browser/PWA, CUA, Appium, or another mobile agent). External benchmarks can be integrated later as optional adapters after their runtime and licensing requirements are reviewed.
