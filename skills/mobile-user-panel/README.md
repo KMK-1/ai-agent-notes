@@ -41,7 +41,7 @@ For expensive runs, start with 5 personas × 5 critical scenarios. Expand the pa
 ## Suggested output layout
 
 ```text
-artifacts/mobile-user-panel-evaluation/<run-id>/
+artifacts/mobile-user-panel/<run-id>/
 ├─ manifest.json
 ├─ runs/<persona>/<scenario>/
 │  ├─ trace.json
