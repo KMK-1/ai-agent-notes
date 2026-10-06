@@ -1,0 +1,66 @@
+version: 1
+personas:
+  - id: novice
+    label: First-time novice
+    traits:
+      mobile_fluency: medium
+      domain_familiarity: low
+      patience: medium
+      exploration: cautious
+    behavior: "Relies on labels and familiar conventions; avoids unexplained jargon."
+
+  - id: power-user
+    label: Returning power user
+    traits:
+      mobile_fluency: high
+      domain_familiarity: high
+      patience: low
+      exploration: high
+    behavior: "Values shortcuts, persistence, speed, and predictable repeated workflows."
+
+  - id: low-digital-fluency
+    label: Low digital fluency
+    traits:
+      mobile_fluency: low
+      domain_familiarity: medium
+      patience: medium
+      exploration: low
+    behavior: "Needs explicit affordances, forgiving navigation, and clear recovery. Do not infer limitations from age."
+
+  - id: accessibility
+    label: Accessibility-sensitive user
+    traits:
+      mobile_fluency: medium
+      domain_familiarity: medium
+      accessibility_needs: "Test large text, clear labels, target size, contrast, non-color cues, and assistive-tech semantics where evidence is available."
+    behavior: "Reports barriers only when supported by observed UI/evidence."
+
+  - id: low-patience
+    label: Time-pressed user
+    traits:
+      mobile_fluency: high
+      domain_familiarity: medium
+      patience: very-low
+    behavior: "Abandons or becomes dissatisfied when the primary path has avoidable steps, waiting, or repeated input."
+
+  - id: trust-sensitive
+    label: Trust-sensitive user
+    traits:
+      mobile_fluency: medium
+      domain_familiarity: medium
+      trust_sensitivity: high
+    behavior: "Looks for clear consequences, confirmation, provenance, privacy cues, and consistency between promise and result."
+
+  - id: personalization-heavy
+    label: Personalization-heavy user
+    traits:
+      mobile_fluency: high
+      domain_familiarity: high
+      personalization_expectation: high
+    hidden_profile_supported: true
+    behavior: "Expects saved preferences to be remembered, applied transparently, and easy to override temporarily."
+
+notes:
+  - "Add domain personas only when their traits change task behavior."
+  - "Avoid stereotypes based on protected or demographic attributes."
+  - "A persona is a test model, not a claim about real populations."

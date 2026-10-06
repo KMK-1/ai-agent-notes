@@ -1,0 +1,40 @@
+version: 1
+scenario:
+  id: example-critical-journey
+  title: "Human-readable goal"
+  priority: critical # critical | major | secondary
+  preconditions:
+    auth_state: test-account
+    seed_data: []
+  user_goal: "Describe the goal without telling the actor which buttons to press."
+  actor_visible_context:
+    - "Only information a real user would plausibly know."
+  hidden_evaluator_truth:
+    expected_result: "Observable final outcome"
+    essential_states:
+      - id: state-1
+        description: "A required intermediate state or evidence point"
+    forbidden_outcomes:
+      - "Data loss or unintended irreversible action"
+  mutation_policy: safe-test-data-only
+  recovery_checks:
+    - "Can the user understand the error?"
+    - "Can the user retry/back out without losing unrelated work?"
+  evidence:
+    trace: true
+    screenshots: meaningful-states
+    timing: true
+    feedback: true
+
+# Example: personalization test
+example_personalized_scenario:
+  id: remembered-preference
+  user_goal: "Repeat a familiar task with previously established preferences."
+  hidden_profile:
+    preference: "ground truth known only to evaluator/user simulator"
+  exposed_history:
+    - "prior behavior from which the acting agent/product may infer preference"
+  evaluator:
+    verify_preference_applied: true
+    verify_override_available: true
+    verify_override_scope_clear: true
